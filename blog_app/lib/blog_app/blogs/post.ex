@@ -5,7 +5,9 @@ defmodule BlogApp.Blogs.Post do
   schema "posts" do
     field :title, :string
     field :body, :string
-    field :user_id, :id
+
+    belongs_to :user, BlogApp.Accounts.User  
+    has_many :comments, BlogApp.Blogs.Comment
 
     timestamps(type: :utc_datetime)
   end
@@ -13,7 +15,7 @@ defmodule BlogApp.Blogs.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:title, :body])
-    |> validate_required([:title, :body])
+    |> cast(attrs, [:title, :body, :user_id])
+    |> validate_required([:title, :body, :user_id])
   end
 end

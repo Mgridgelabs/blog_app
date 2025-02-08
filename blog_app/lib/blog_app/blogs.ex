@@ -18,7 +18,8 @@ defmodule BlogApp.Blogs do
 
   """
   def list_posts do
-    Repo.all(Post)
+    Repo.all(Post) |> Repo.preload([:comments, :user])
+
   end
 
   @doc """

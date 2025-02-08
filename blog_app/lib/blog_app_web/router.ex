@@ -17,13 +17,30 @@ defmodule BlogAppWeb.Router do
   scope "/", BlogAppWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/login", UserSessionLive, :new
+    live "/register", UserRegistrationLive, :new
+    live "/", LandingLive, :index
+    live "/home", HomeLive, :index
+    live "/dashboard", DashboardLive, :index
+    live "/posts", PostLive.Index, :index
+    live "/posts/:id", PostLive.Show, :show
+    live "/posts/:id/edit", PostLive.Edit, :edit
+    live "/comments", CommentLive.Index, :index
+    live "/comments/new", CommentLive.New, :new
+    live "/comments/:id", CommentLive.Show, :show
+    live "/comments/:id/edit", CommentLive.Edit, :edit
+
+    # get "/", PageController, :home
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", BlogAppWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", BlogAppWeb do
+    pipe_through :api
+
+    resources "/users", UserController, only: [:index, :show, :create, :update, :delete]
+  resources "/posts", PostController, only: [:index, :show, :create, :update, :delete]
+  resources "/comments", CommentController, only: [:index, :show, :create, :update, :delete]
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:blog_app, :dev_routes) do

@@ -50,9 +50,22 @@ defmodule BlogApp.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    # Debugging
+    IO.inspect(attrs, label: "Incoming user attributes")
+
+    case %User{}
+        |> User.changeset(attrs)
+        |> Repo.insert() do
+      {:ok, user} ->
+        # Debugging
+        IO.inspect(user, label: "User successfully created")
+        {:ok, user}
+
+      {:error, changeset} ->
+        # Debugging
+        IO.inspect(changeset.errors, label: "User creation errors")
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -101,4 +114,14 @@ defmodule BlogApp.Accounts do
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
+
+  def authenticate_user(email, password) do
+    user = Repo.get_by(User, email: email)
+
+    if user && Bcrypt.verify_pass(password, user.hashed_password) do
+      {:ok, user}
+    else
+      {:error, :invalid_credentials}
+    end
+    end
 end
