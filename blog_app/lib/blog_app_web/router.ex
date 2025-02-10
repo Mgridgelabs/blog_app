@@ -8,6 +8,7 @@ defmodule BlogAppWeb.Router do
     plug :put_root_layout, html: {BlogAppWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug BlogAppWeb.Plugs.AssignUser
   end
 
   pipeline :api do

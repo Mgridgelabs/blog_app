@@ -1,6 +1,8 @@
 defmodule BlogAppWeb.UserSessionLive do
   use BlogAppWeb, :live_view
 
+  alias BlogApp.Accounts
+
   def render(assigns) do
     ~H"""
     <div class="h-screen flex flex-col justify-center items-center">
@@ -21,14 +23,17 @@ defmodule BlogAppWeb.UserSessionLive do
 
 
   def handle_event("login", %{"email" => email, "password" => password}, socket) do
-    case BlogApp.Accounts.authenticate_user(email, password) do
+    case Accounts.authenticate_user(email, password) do
       {:ok, user} ->
-        IO.puts("✅ Login successful for #{email}")
-        {:noreply, push_navigate(socket, to: "/home")}
+        socket =
+          socket
+          |> put_flash(:info, "Welcome, #{user.name}!")
+          |> push_navigate(to: "/home")
 
-      {:error, reason} ->
-        IO.puts("❌ Login failed for #{email}")
-        {:noreply, assign(socket, :error_message, "Invalid email or password")}
+        {:noreply, assign(socket, :session, %{"user_id" => user.id})}
+
+      {:error, _reason} ->
+        {:noreply, put_flash(socket, :error, "Invalid email or password")}
     end
   end
 

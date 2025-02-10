@@ -7,7 +7,7 @@ defmodule BlogAppWeb.LandingLive do
     <div class="h-screen flex">
       <!-- Left Side: Image -->
       <div class="w-1/2 h-full bg-cover bg-center bg-no-repeat"
-           style="background-image: url('/images/Landing1.png');">
+          style="background-image: url('/images/Landing1.png');">
       </div>
 
       <!-- Right Side: Text Content -->
